@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Keep this page out of search engines while it is shared by link only.
+       Remove this line if/when the project page is made public. -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description"
+        content="OneCanvas: 3D Scene Understanding via Panoramic Reprojection. Multi-view patch features are lifted to 3D and projected onto a single equirectangular panorama that a pretrained 2D VLM consumes directly.">
+  <meta name="keywords" content="OneCanvas, 3D scene understanding, vision-language model, VLM, panoramic reprojection, SQA3D, VSI-Bench, SPBench">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OneCanvas: 3D Scene Understanding via Panoramic Reprojection</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bootstrap-4.4.1.css">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <!-- FontAwesome icons are rendered by the SVG-with-JS framework
+       (fontawesome.all.min.js, loaded below), which bundles all icon paths and
+       needs no webfonts. The old webfont CSS only 404'd on the absent
+       static/webfonts/ dir, so it's intentionally dropped. -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icon.png">
+  <script src="static/js/video_comparison.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <link rel="stylesheet" href="static/css/dics.original.css">
+  <script src="static/js/event_handler.js"></script>
+  <script src="static/js/dics.original.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- three.js for the interactive panoramic-reprojection demo -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="./static/js/onecanvas_demo.js"></script>
+  <script src="./static/js/lazy_video.js"></script>
+
+  <!-- ============================================================
+       OneCanvas — golden theme accents. Mirrors the title-card video:
+       near-black canvas, gold "Canvas" word, golden 30deg lat/lon grid
+       + soft glow, bright golden "flash" divider, green forward crosshair.
+       Self-contained; delete this <style> block to fully revert.
+       ============================================================ -->
+  <style>
+  :root {
+    --oc-ink:        #0a0a0d;                    /* near-black canvas bg     */
+    --oc-gold:       #e8b84a;                    /* rich gold hero word      */
+    --oc-gold-soft:  #ecbd54;                    /* golden panel border      */
+    --oc-gold-glow:  #e9ba52;                    /* soft golden halo         */
+    --oc-gold-flash: #ffdc84;                    /* bright warm flash        */
+    --oc-gold-deep:  #8a6510;                    /* readable gold on white   */
+    --oc-grid:       rgba(186, 147, 64, 0.16);   /* gold lat/lon grid lines  */
+    --oc-green:      #18c850;                     /* forward crosshair        */
+  }
+
+  /* ---- Hero: white, lightly warmed with a soft gold halo ---- */
+  #oc-hero {
+    background:
+      radial-gradient(120% 78% at 50% -8%, rgba(232,184,74,0.10) 0%, rgba(232,184,74,0) 60%),
+      #ffffff;
+  }
+  /* Metallic-gold "Canvas" word (gradient text reads well on white). */
+  .oc-gold-word {
+    background: linear-gradient(180deg, #e3ad36 0%, #b8860b 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+
+  .publication-authors a       { color: var(--oc-gold-deep) !important; }
+  .publication-authors a:hover { color: #b8860b             !important; }
+
+  /* ---- Buttons: gold-outline on white, fill gold on hover ---- */
+  #oc-hero .button.is-dark {
+    background: #fffdf8;
+    border: 1.5px solid var(--oc-gold-soft);
+    color: var(--oc-gold-deep);
+    box-shadow: 0 2px 10px -5px rgba(184,134,11,0.35);
+    transition: background .18s ease, color .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  #oc-hero .button.is-dark:hover {
+    background: linear-gradient(180deg, #e8b84a 0%, #c8901a 100%);
+    border-color: #c8901a;
+    color: #2a1f06;
+    box-shadow: 0 8px 22px -8px rgba(200,144,26,0.6);
+  }
+
+  /* ---- Golden hairline divider beneath the buttons (slow fade) ---- */
+  .publication-links::after {
+    content: "";
+    display: block;
+    height: 2px;
+    width: min(820px, 90%);
+    margin: 26px auto 0;
+    background: linear-gradient(90deg, transparent 0%, var(--oc-gold-soft) 22%, var(--oc-gold-soft) 78%, transparent 100%);
+    box-shadow: 0 0 10px rgba(236,189,84,0.45);
+  }
+
+  /* ---- Section headings: gold rule lines flanking the text ---- */
+  .section .title.is-3,
+  .hero.is-light .title.is-3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .section .title.is-3::before,
+  .section .title.is-3::after,
+  .hero.is-light .title.is-3::before,
+  .hero.is-light .title.is-3::after {
+    content: "";
+    flex: 1 1 auto;
+    max-width: 340px;
+    height: 2px;
+    border-radius: 2px;
+  }
+  /* Long, gradual fade: full gold next to the text, vanishing right at the
+     outer ends rather than partway along the rule. */
+  .section .title.is-3::before,
+  .hero.is-light .title.is-3::before {
+    background: linear-gradient(90deg, transparent 0%, var(--oc-gold-soft) 92%);
+  }
+  .section .title.is-3::after,
+  .hero.is-light .title.is-3::after {
+    background: linear-gradient(90deg, var(--oc-gold-soft) 8%, transparent 100%);
+  }
+
+  /* ---- Results stat boxes: gold top accent, gold figures, hover lift ---- */
+  .box {
+    border-top: 3px solid var(--oc-gold);
+    box-shadow: 0 10px 30px -16px rgba(17,24,39,0.45);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px -18px rgba(17,24,39,0.5);
+  }
+  .box .is-size-2.has-text-weight-bold { color: var(--oc-gold-deep); }
+
+  /* ---- BibTeX block: subtle gold rule + readable text ---- */
+  #BibTeX pre {
+    border-left: 3px solid var(--oc-gold);
+    background: #fafafa;
+  }
+  #BibTeX pre,
+  #BibTeX pre code { color: #3a3a3a; }
+
+  /* ---- Bold lead-ins / inline mentions pick up the warm tone ---- */
+  .content b { color: var(--oc-gold-deep); }
+
+  /* ---- Footer: gold gradient top rule to close the page ---- */
+  .footer { position: relative; }
+  .footer::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--oc-gold-soft) 50%, transparent);
+  }
+
+  /* ---- General polish ---- */
+  html { scroll-behavior: smooth; }
+  body { overflow-x: hidden; }   /* nav-justified tabs can poke a few px past narrow viewports */
+
+  /* Figures pick up the same card treatment as the teaser video. */
+  .section img.center {
+    border-radius: 12px;
+    box-shadow: 0 16px 50px -22px rgba(17,24,39,0.45), 0 0 0 1px rgba(17,24,39,0.06);
+    background: #fff;
+    padding: 10px;
+  }
+
+  /* Video placeholder card (until the paper video is released). */
+  #video-placeholder {
+    border: 1.5px dashed var(--oc-gold-soft);
+    border-radius: 14px;
+    background:
+      radial-gradient(90% 120% at 50% 0%, rgba(232,184,74,0.08) 0%, rgba(232,184,74,0) 70%),
+      #fffdf8;
+    padding: 3.5rem 1.5rem;
+    color: var(--oc-gold-deep);
+  }
+  #video-placeholder .icon {
+    display: inline-flex;
+    width: 72px; height: 72px;
+    align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #e8b84a 0%, #c8901a 100%);
+    color: #2a1f06;
+    box-shadow: 0 10px 26px -10px rgba(200,144,26,0.55);
+  }
+  #video-placeholder .icon svg { margin-left: 4px; }  /* optical centering of the play triangle */
+
+  /* ---- Mobile refinements ---- */
+  @media (max-width: 768px) {
+    .publication-title { font-size: 1.75rem !important; }
+    /* Heading rules shrink so titles keep room to breathe. */
+    .section .title.is-3::before,
+    .section .title.is-3::after,
+    .hero.is-light .title.is-3::before,
+    .hero.is-light .title.is-3::after {
+      width: clamp(16px, 9vw, 48px);
+    }
+    .section .title.is-3,
+    .hero.is-light .title.is-3 { gap: 12px; }
+    /* Demo tabs wrap instead of crushing into one row. */
+    #demo-scene-tabs, #demo-question-tabs { flex-wrap: wrap; }
+    #demo-scene-tabs .nav-item, #demo-question-tabs .nav-item { flex: 1 1 auto; }
+    /* Demo controls row stacks instead of clipping off-screen. */
+    #demo-root .level.is-mobile { flex-wrap: wrap; }
+    #demo-root .level.is-mobile .level-right { flex-wrap: wrap; }
+    /* Equirect strip uses the full width on small screens. */
+    #demo-equirect { width: 100% !important; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero" id="oc-hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">One<span class="oc-gold-word">Canvas</span>: 3D Scene Understanding via Panoramic Reprojection</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://baranowskibrt.github.io/">Bartłomiej Baranowski</a><sup>1</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="author-block">
+              <a href="https://daveredrum.github.io/">Dave Zhenyu Chen</a><sup>2</sup></span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="author-block">
+              <a href="https://niessnerlab.org/members/matthias_niessner/profile.html">Matthias Nießner</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Technical University of Munich</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="author-block"><sup>2</sup>Huawei</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2606.19253"
+                   target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=NIaHLB9gA7s"
+                   target="_blank" rel="noopener noreferrer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <svg class="svg-inline--fa fa-play fa-w-14" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="play" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="https://github.com/baranowskibrt/onecanvas"
+                   class="external-link button is-normal is-rounded is-dark"
+                   target="_blank" rel="noopener noreferrer"
+                   title="Code release coming soon">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (coming soon)</span>
+                </a>
+              </span>
+
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+
+          <video class="center lazy-video" style="width:100%; display:block; border-radius:14px; box-shadow:0 24px 70px -20px rgba(17,24,39,0.55), 0 0 0 1px rgba(17,24,39,0.08);"
+                 autoplay loop muted playsinline preload="metadata"
+                 poster="static/videos/hero_poster.jpg">
+            <source data-src="static/videos/hero_loop.webm" type="video/webm">
+            <source data-src="static/videos/hero_loop.mp4" type="video/mp4">
+            <img src="static/images/teaser.png" alt="OneCanvas teaser" style="width:100%;">
+          </video>
+
+          <h2 class="subtitle has-text-centered" style="margin-top: 15px">
+            Multi-view patch features are lifted to 3D and projected onto a single equirectangular panorama. A pretrained 2D VLM consumes this representation directly, with no architectural changes.
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+          Existing approaches to 3D scene understanding in Vision-Language Models (VLMs) either rely on complex, model-specific geometry encoders or large training budgets in pursuit of spatial reasoning. Instead, <b>OneCanvas</b> aggregates patch features from all views onto a single equirectangular panoramic canvas. Each patch is unprojected to a 3D world coordinate using its depth and camera pose, then placed on the canvas at the continuous longitude and latitude of that point as seen from the canvas origin, with no rasterization onto a pixel grid and no aggregation across views.
+          </p>
+          <p>
+          A 3D position embedding of the patch's metric coordinates is added to its feature, restoring the depth lost when collapsing the world position to an angular canvas coordinate. Patches from all frames thus share one spatial coordinate system with no fusion or major architectural modifications of the backbone. The pretrained VLM consumes this representation as if it were an ordinary image. Because the canvas can be centered on any pose of interest, the same representation directly supports situated reasoning from a specific viewpoint, a common requirement in robotics and embodied AI.
+          </p>
+          <p>
+          Thanks to this representation, we can also introduce a spatial pretraining curriculum: by procedurally placing patch features of objects, drawn from real images, at chosen 3D world positions on an otherwise empty canvas, we generate on-the-fly supervision spanning a broad range of spatial reasoning tasks, with answer distributions controlled to reduce spatial reasoning shortcuts. OneCanvas achieves state-of-the-art accuracy on SQA3D and VSI-Bench, and generalizes to out-of-distribution data on SPBench, using an order of magnitude less training compute than the strongest competing methods.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="column is-full-width has-text-centered">
+        <h2 class="title is-3">Method</h2>
+        <img src="static/images/pipeline.png" class="center" style="width:100%;">
+        <div class="content has-text-justified">
+          <p style="margin-top: 30px">
+            <b>Feature extraction and 3D lifting.</b> Each input image is passed through the frozen vision encoder of a pretrained VLM to obtain per-patch features. Each patch is unprojected to world coordinates using its metric depth and the camera-to-world pose.
+          </p>
+          <p>
+            <b>Panoramic canvas.</b> Each lifted patch is placed on the canvas at the continuous longitude and latitude of its 3D position as seen from a chosen origin. Positions are continuous, so every patch becomes its own token rather than being rasterized onto a shared pixel grid and collapsed by a hand-designed reduction rule. The VLM then consumes the canvas through its native attention layers, with each patch's spherical coordinates on the spatial position axes and its source-frame index on the temporal axis.
+          </p>
+        </div>
+    </div>
+</section>
+
+<!-- Interactive panoramic-reprojection demo (three.js). Scene assets are
+     generated by scripts/export_web_scene.py into static/scenes/<id>/. -->
+<section class="section has-background-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Interactive Demo</h2>
+        <div class="content has-text-justified">
+          <p>
+            Pick a situated question to fly the canvas-origin globe to that viewpoint. Every lifted patch feature reprojects onto the globe along a spoke colored by its source camera, and the strip below shows the same reprojection unrolled into the equirectangular canvas the VLM actually consumes. Drag to orbit.
+          </p>
+        </div>
+
+        <div id="demo-root">
+          <!-- Scene selector (populated from static/scenes/index.json; hidden for a single scene). -->
+          <ul class="nav nav-tabs nav-fill nav-justified" id="demo-scene-tabs"></ul>
+
+          <!-- Situated questions (populated from the scene's scene.json). -->
+          <ul class="nav nav-tabs nav-fill nav-justified mt-3" id="demo-question-tabs"></ul>
+
+          <!-- 3D viewer. -->
+          <canvas id="demo-canvas"
+                  style="width: 100%; height: 440px; display: block; margin-top: 1rem;
+                         background: #0a0a0f; border-radius: 6px;"></canvas>
+
+          <div class="level is-mobile mt-2" style="margin-bottom: 0.25rem;">
+            <div class="level-left">
+              <p id="demo-answer" class="is-size-6"></p>
+            </div>
+            <div class="level-right">
+              <label class="checkbox is-size-7 has-text-grey mr-3">
+                <input type="checkbox" id="demo-show-rays" checked> show rays
+              </label>
+              <label class="checkbox is-size-7 has-text-grey">
+                <input type="checkbox" id="demo-show-cloud" checked> show scene cloud
+              </label>
+            </div>
+          </div>
+          <p id="demo-situation" class="is-size-7 has-text-grey-dark has-text-left"
+             style="min-height: 1.2em;"></p>
+
+          <!-- Equirectangular reprojection strip (camera-colored feature dots). -->
+          <canvas id="demo-equirect"
+                  style="width: 78%; max-width: 640px; aspect-ratio: 2 / 1; display: block;
+                         margin: 0.75rem auto 0; border: 1px solid #d8d8de;
+                         border-radius: 4px; background: #fff;"></canvas>
+          <p class="has-text-grey is-size-7 mt-2" style="font-style: italic;">
+            Equirectangular canvas from the current viewpoint. Forward is centered (green crosshair). Dots are lifted patch features colored by source camera.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Two-Stage Training</h2>
+        <img src="static/images/stages.png" class="center" style="width:100%;">
+        <div class="content has-text-justified">
+          <p style="margin-top: 30px">
+            <b>Stage 1: spatial pretraining.</b> A LoRA adapter and the 3D position embedding are trained on an on-the-fly curriculum of spatial reasoning tasks. Each sample places real-image patch features at procedurally chosen 3D positions on an otherwise empty canvas. With appearance decoupled from size and location, geometry on the canvas is the only signal that can solve the task.
+          </p>
+          <p>
+            <b>Stage 2: target adaptation.</b> The stage-1 adapter is merged back into the base language model, and a fresh, lower-rank adapter is trained on a mixture of downstream spatial question answering. The merged stage-1 update anchors the geometric reading while the smaller stage-2 adapter handles answer-format adaptation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section has-background-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/NIaHLB9gA7s" id="paper-video-iframe"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+        <img src="static/images/radar_comparison.png" class="center" style="width:80%;">
+        <div class="content has-text-justified">
+          <p style="margin-top: 30px">
+            <b style="color: var(--oc-gold-deep);">OneCanvas</b> reaches state of the art on three spatial reasoning benchmarks: <b>SQA3D</b> (65.3 EM@1, 2.3 points above the previous best), <b>VSI-Bench</b> (70.1 average), and <b>SPBench</b> (72.1 zero-shot overall, 4.8 points above the next best method), while using an order of magnitude less training compute than the strongest competing methods.
+          </p>
+        </div>
+
+        <div class="columns is-centered" style="margin-top: 30px;">
+          <div class="column">
+            <div class="box has-text-centered">
+              <h3 class="title is-4">SQA3D</h3>
+              <p class="is-size-2 has-text-weight-bold">65.3</p>
+              <p class="has-text-grey">EM@1</p>
+              <p style="margin-top: 8px;">
+                <span class="tag is-success is-light" style="font-weight: 600;">
+                  <i class="fas fa-arrow-up" style="margin-right: 4px;"></i>+2.3 over prev. SOTA
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="box has-text-centered">
+              <h3 class="title is-4">VSI-Bench</h3>
+              <p class="is-size-2 has-text-weight-bold">70.1</p>
+              <p class="has-text-grey">Average</p>
+              <p style="margin-top: 8px;">
+                <span class="tag is-success is-light" style="font-weight: 600;">
+                  <i class="fas fa-arrow-up" style="margin-right: 4px;"></i>+11.3 on route planning
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="column">
+            <div class="box has-text-centered">
+              <h3 class="title is-4">SPBench</h3>
+              <p class="is-size-2 has-text-weight-bold">72.1</p>
+              <p class="has-text-grey">Zero-shot overall</p>
+              <p style="margin-top: 8px;">
+                <span class="tag is-success is-light" style="font-weight: 600;">
+                  <i class="fas fa-arrow-up" style="margin-right: 4px;"></i>+4.8 over prev. SOTA
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@misc{baranowski2026onecanvas,
+  title         = {OneCanvas: 3D Scene Understanding via Panoramic Reprojection},
+  author        = {Baranowski, Bart{\l}omiej and Chen, Dave Zhenyu and Nie{\ss}ner, Matthias},
+  year          = {2026},
+  eprint        = {2606.19253},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+}</code></pre>
+  </div>
+</section>
+
+
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+        <p>
+          This website is licensed under a
+          <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">
+            Creative Commons Attribution-ShareAlike 4.0 International License
+          </a>.
+        </p>
+        <p>
+          Website template adapted from
+          <a href="https://github.com/nerfies/nerfies.github.io" target="_blank" rel="noopener noreferrer">Nerfies</a>.
+        </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>

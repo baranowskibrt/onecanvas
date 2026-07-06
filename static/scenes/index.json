@@ -1,0 +1,24 @@
+{
+  "scenes": [
+    {
+      "id": "scene0030_00",
+      "title": "ScanNet 0030"
+    },
+    {
+      "id": "scene0011_00",
+      "title": "ScanNet 0011"
+    },
+    {
+      "id": "scene0064_00",
+      "title": "ScanNet 0064"
+    },
+    {
+      "id": "scene0081_00",
+      "title": "ScanNet 0081"
+    },
+    {
+      "id": "scene0144_00",
+      "title": "ScanNet 0144"
+    }
+  ]
+}
