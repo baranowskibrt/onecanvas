@@ -336,7 +336,7 @@
           A 3D position embedding of the patch's metric coordinates is added to its feature, restoring the depth lost when collapsing the world position to an angular canvas coordinate. Patches from all frames thus share one spatial coordinate system with no fusion or major architectural modifications of the backbone. The pretrained VLM consumes this representation as if it were an ordinary image. Because the canvas can be centered on any pose of interest, the same representation directly supports situated reasoning from a specific viewpoint, a common requirement in robotics and embodied AI.
           </p>
           <p>
-          Thanks to this representation, we can also introduce a spatial pretraining curriculum: by procedurally placing patch features of objects, drawn from real images, at chosen 3D world positions on an otherwise empty canvas, we generate on-the-fly supervision spanning a broad range of spatial reasoning tasks, with answer distributions controlled to reduce spatial reasoning shortcuts. OneCanvas achieves state-of-the-art accuracy on SQA3D and VSI-Bench, and generalizes to out-of-distribution data on SPBench, using an order of magnitude less training compute than the strongest competing methods.
+          Thanks to this representation, we can also introduce a spatial pretraining curriculum: by procedurally placing patch features of objects, drawn from real images, at chosen 3D world positions on an otherwise empty canvas, we generate on-the-fly supervision spanning a broad range of spatial reasoning tasks, with answer distributions controlled to reduce spatial reasoning shortcuts. OneCanvas achieves state-of-the-art accuracy on SQA3D and VSI-Bench, and generalizes to out-of-distribution data on SPBench, using an order of magnitude less training compute than the strongest competing methods, SpaceMind and SenseNova-SI.
           </p>
         </div>
       </div>
@@ -460,7 +460,7 @@
         <img src="static/images/radar_comparison.png" class="center" style="width:80%;">
         <div class="content has-text-justified">
           <p style="margin-top: 30px">
-            <b style="color: var(--oc-gold-deep);">OneCanvas</b> reaches state of the art on three spatial reasoning benchmarks: <b>SQA3D</b> (65.3 EM@1, 2.3 points above the previous best), <b>VSI-Bench</b> (70.1 average), and <b>SPBench</b> (72.1 zero-shot overall, 4.8 points above the next best method), while using an order of magnitude less training compute than the strongest competing methods.
+            <b style="color: var(--oc-gold-deep);">OneCanvas</b> reaches state of the art on three spatial reasoning benchmarks: <b>SQA3D</b> (65.3 EM@1, 2.3 points above the previous best), <b>VSI-Bench</b> (71.3 average), and <b>SPBench</b> (72.1 zero-shot overall, 4.8 points above the next best method), while using an order of magnitude less training compute than the strongest competing methods, SpaceMind and SenseNova-SI.
           </p>
         </div>
 
@@ -480,11 +480,11 @@
           <div class="column">
             <div class="box has-text-centered">
               <h3 class="title is-4">VSI-Bench</h3>
-              <p class="is-size-2 has-text-weight-bold">70.1</p>
+              <p class="is-size-2 has-text-weight-bold">71.3</p>
               <p class="has-text-grey">Average</p>
               <p style="margin-top: 8px;">
                 <span class="tag is-success is-light" style="font-weight: 600;">
-                  <i class="fas fa-arrow-up" style="margin-right: 4px;"></i>+11.3 on route planning
+                  <i class="fas fa-arrow-up" style="margin-right: 4px;"></i>+12.3 on route planning
                 </span>
               </p>
             </div>
