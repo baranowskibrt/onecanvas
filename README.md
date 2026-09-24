@@ -15,12 +15,10 @@ this repository to be notified when it lands.
 ## Citation
 
 ```bibtex
-@misc{baranowski2026onecanvas,
-  title         = {OneCanvas: 3D Scene Understanding via Panoramic Reprojection},
-  author        = {Baranowski, Bart{\l}omiej and Chen, Dave Zhenyu and Nie{\ss}ner, Matthias},
-  year          = {2026},
-  eprint        = {2606.19253},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV}
+@inproceedings{baranowski2026onecanvas,
+  title     = {OneCanvas: 3D Scene Understanding via Panoramic Reprojection},
+  author    = {Baranowski, Bart{\l}omiej and Chen, Dave Zhenyu and Nie{\ss}ner, Matthias},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2026}
 }
 ```
