@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "OneCanvas: 3D Scene Understanding via Panoramic Reprojection"
+authors:
+  - family-names: Baranowski
+    given-names: Bartłomiej
+    affiliation: Technical University of Munich
+  - family-names: Chen
+    given-names: Dave Zhenyu
+    affiliation: Huawei
+  - family-names: Nießner
+    given-names: Matthias
+    affiliation: Technical University of Munich
+url: "https://baranowskibrt.github.io/onecanvas/"
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "OneCanvas: 3D Scene Understanding via Panoramic Reprojection"
+  authors:
+    - family-names: Baranowski
+      given-names: Bartłomiej
+      affiliation: Technical University of Munich
+    - family-names: Chen
+      given-names: Dave Zhenyu
+      affiliation: Huawei
+    - family-names: Nießner
+      given-names: Matthias
+      affiliation: Technical University of Munich
+  collection-title: "Advances in Neural Information Processing Systems (NeurIPS)"
+  year: 2026
+  url: "https://arxiv.org/abs/2606.19253"

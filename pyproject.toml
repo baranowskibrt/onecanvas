@@ -1,0 +1,118 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onecanvas"
+version = "0.1.0"
+description = "OneCanvas: 3D scene understanding via panoramic reprojection"
+readme = "README.md"
+# 3.11+: both model adapters import typing.Unpack (new in 3.11).
+requires-python = ">=3.11"
+license = { text = "MIT" }
+# Core runtime deps for the standalone reprojection + inference surface.
+# Declared as version FLOORS, not pins: on the cluster these are already
+# satisfied by the conda env, so `pip install -e .` will not touch or upgrade
+# them; an external `pip install onecanvas` resolves them fresh. Heavy,
+# use-case-specific deps (training, benchmark scoring, visualization) live in
+# optional-dependencies below so a scene-reprojection user is not forced to
+# install deepspeed/open3d/etc.
+dependencies = [
+    "torch>=2.4",
+    "torchvision>=0.22",
+    "transformers>=4.57",
+    "numpy>=1.24",
+    "pillow>=10.0",
+]
+
+[project.urls]
+Homepage = "https://baranowskibrt.github.io/onecanvas/"
+Paper = "https://arxiv.org/abs/2606.19253"
+
+[project.optional-dependencies]
+# LoRA fine-tuning + distributed training (training/onecanvas/train/train.py)
+# and the spatial-pretraining curriculum. scipy: ConvexHull footprint area in
+# spatial_pretraining/_common.py. wandb: base.sh runs `--report_to wandb`.
+# plyfile: GT scene-center calibration in data_processor_3d.py (optional at
+# runtime, warns if missing).
+train = [
+    "peft>=0.11",
+    "deepspeed>=0.14",
+    "accelerate>=0.30",
+    "scipy>=1.10",
+    "shapely==2.1.1",
+    "wandb>=0.16",
+    "plyfile>=1.0",
+    "tqdm>=4.65",
+]
+# Benchmark scoring in utils/metrics.py (training/run_benchmarks.py). peft:
+# run_benchmarks imports PeftModel at module top to load LoRA checkpoints.
+eval = [
+    "nltk>=3.8",
+    "rouge-score>=0.1.2",
+    "pycocoevalcap>=1.2",
+    "peft>=0.11",
+    "tqdm>=4.65",
+]
+# Dataset preparation tooling in scripts/ (docs/DATA.md). NOT needed to train
+# or evaluate on an already-built tree, but every from-raw rebuild goes through
+# these, and without the extra the documented commands die on ModuleNotFoundError:
+#   opencv-python  video decode + uint16 PNG write (extract_scannetpp_iphone_{rgb,depth}.py,
+#                  scannet_sensordata.py). cv2.imwrite is ~5x faster than imageio here.
+#   lz4            ScanNet++ depth.bin is lz4.block-compressed (extract_scannetpp_iphone_depth.py)
+#   pandas+pyarrow SPBench ships parquet; pd.read_parquet needs an engine
+#                  (convert_spbench.py, download_extract_scannet.py)
+data = [
+    "opencv-python>=4.8",
+    "lz4>=4.0",
+    "pandas>=2.0",
+    "pyarrow>=14.0",
+    "tqdm>=4.65",
+]
+# Visualization / point-cloud debug helpers (debug/visualizations.py).
+viz = [
+    "open3d>=0.18",
+]
+all = ["onecanvas[train,eval,data,viz]"]
+# Test harness (tests/): the reproducibility gates run under pytest.
+dev = ["pytest>=7.0"]
+
+[tool.setuptools]
+# Ship the MIT license and the Apache-2.0 third-party attributions in the
+# wheel/sdist dist-info.
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+# Explicit list, NOT packages.find: auto-discovery os.walks the whole repo
+# root (output/, wandb/, datasets/ on network FS) and hangs for minutes.
+# Flat layout keeps the historical top-level names so existing
+# `from utils import ...` / `import model_adapters` code works unchanged.
+# Add new subpackages here when they gain an __init__.py.
+packages = [
+    "model_adapters",
+    "model_adapters.qwen3_vl",
+    "model_adapters.qwen3_5",
+    "geometry",
+    "reprojection",
+    "inference",
+    "utils",
+    "debug",
+    "training",
+    "training.onecanvas",
+    "training.onecanvas.data",
+    "training.onecanvas.data.spatial_pretraining",
+    "training.onecanvas.train",
+    # Alias: training scripts run with cwd=training, so training/onecanvas is
+    # imported as top-level `onecanvas` (e.g. `from onecanvas.setup_3d import
+    # ...` in utils/embedding_io.py). Map the same dirs under that name too so
+    # the imports work env-wide without sys.path hacks.
+    "onecanvas",
+    "onecanvas.data",
+    "onecanvas.data.spatial_pretraining",
+    "onecanvas.train",
+]
+
+[tool.setuptools.package-dir]
+"" = "."
+"onecanvas" = "training/onecanvas"
+"onecanvas.data" = "training/onecanvas/data"
+"onecanvas.data.spatial_pretraining" = "training/onecanvas/data/spatial_pretraining"
+"onecanvas.train" = "training/onecanvas/train"

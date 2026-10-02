@@ -1,0 +1,773 @@
+{
+  "curriculum": "synthetic_obb",
+  "seed": 42,
+  "num_images": 32,
+  "split": "train",
+  "n": 32,
+  "model_path": "Qwen/Qwen3-VL-8B-Instruct",
+  "_generated_by": "tests/release/curriculum_golden.py generate (release repo, post Phase 1.3: per-item torch RNG pin in __getitem__ + aug-seed decorrelation (_aug_seed = base + 0x5EED), on top of the _sample_obb_surface_points unshadow fix); synthetic_obb == the paper curriculum modulo the box_floor_area task rename. Only rel_dir_camera_* samples move vs. the pre-1.3 golden (camera-pose aug now draws from a decorrelated stream).",
+  "records": [
+    {
+      "question": "If you are standing at <|object_ref_start|> and facing <|object_ref_start|>, with the target at <|object_ref_start|>, is the target to the back, left, or right? A. back  B. right  C. left",
+      "answer": "B",
+      "question_type": "curriculum_rel_dir_medium_box",
+      "repro": {
+        "task": "rel_dir_medium_box",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          16511,
+          10163,
+          3021
+        ],
+        "frame_indices": [
+          15,
+          9,
+          2
+        ]
+      },
+      "geom": "3d00f8b97a871eb3",
+      "idx": 0,
+      "hash": "32226a5bb4bb9505"
+    },
+    {
+      "question": "Measuring from the closest point of each object, which of these objects is the closest to <|object_ref_start|>? A. <|object_ref_start|>  B. <|object_ref_start|>  C. <|object_ref_start|>  D. <|object_ref_start|>",
+      "answer": "A",
+      "question_type": "curriculum_rel_dist_box",
+      "repro": {
+        "task": "rel_dist_box",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          24403,
+          6274,
+          4011,
+          29977,
+          32644
+        ],
+        "frame_indices": [
+          22,
+          5,
+          3,
+          27,
+          29
+        ]
+      },
+      "geom": "0e19f0ebc462d345",
+      "idx": 1,
+      "hash": "2ccc0300b9797461"
+    },
+    {
+      "question": "Is the number of <|object_ref_start|> in the room odd or even?",
+      "answer": "even",
+      "question_type": "curriculum_object_counting_parity_box",
+      "repro": {
+        "task": "object_counting_parity_box",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          14725
+        ],
+        "frame_indices": [
+          13
+        ]
+      },
+      "geom": "b51bdeba14696853",
+      "idx": 2,
+      "hash": "c72a5fd2092e5c86"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. [please fill in]. 2. Go forward until <|object_ref_start|>. 3. [please fill in]. 4. Go forward until <|object_ref_start|>. 5. [please fill in]. 6. Go forward until <|object_ref_start|>. 7. [please fill in]. 8. Go forward until <|object_ref_start|>. 9. [please fill in]. 10. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Back, Turn Right, Turn Right, Turn Right, Turn Left  B. Turn Right, Turn Right, Turn Left, Turn Left, Turn Right  C. Turn Left, Turn Left, Turn Left, Turn Right, Turn Right  D. Turn Right, Turn Left, Turn Right, Turn Right, Turn Left",
+      "answer": "D",
+      "question_type": "curriculum_route_plan_4turn_box",
+      "repro": {
+        "task": "route_plan_4turn_box",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          20972,
+          34776,
+          23740,
+          3923,
+          27788,
+          25193,
+          11019,
+          23740
+        ],
+        "frame_indices": [
+          19,
+          31,
+          21,
+          3,
+          25,
+          23,
+          10,
+          21
+        ]
+      },
+      "geom": "b02ee2b7af92e014",
+      "idx": 3,
+      "hash": "b803a46e98ec5d8f"
+    },
+    {
+      "question": "What is the size of this room in square meters? If multiple rooms are shown, estimate the size of the combined space.",
+      "answer": "32.4",
+      "question_type": "curriculum_box_floor_area_nonrect_yaw_obb_only",
+      "repro": {
+        "task": "box_floor_area_nonrect_yaw_obb_only",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [],
+        "frame_indices": []
+      },
+      "geom": "c53761c1cd777bd2",
+      "idx": 4,
+      "hash": "2684c82e0a7b1034"
+    },
+    {
+      "question": "You are standing at <|object_ref_start|>. Can you see <|object_ref_start|> from this position? Answer yes or no.",
+      "answer": "yes",
+      "question_type": "curriculum_visibility_from_pose",
+      "repro": {
+        "task": "visibility_from_pose",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          13496,
+          16329
+        ],
+        "frame_indices": [
+          12,
+          14
+        ]
+      },
+      "geom": "5a31c9771490a752",
+      "idx": 5,
+      "hash": "2ada41163c36300a"
+    },
+    {
+      "question": "Provide the 3D bounding box of each highlighted region, in the same order: A: <|object_ref_start|>, B: <|object_ref_start|>.",
+      "answer": "[{\"bbox_3d\": [0.37, -0.25, -1.15, 0.25, 0.12, 1.27]}, {\"bbox_3d\": [-0.77, 1.08, -0.91, 0.09, 0.2, 0.08]}]",
+      "question_type": "curriculum_multi_box_grounding_yaw",
+      "repro": {
+        "task": "multi_box_grounding_yaw",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          14444,
+          10684
+        ],
+        "frame_indices": [
+          13,
+          9
+        ]
+      },
+      "geom": "8f2f7bbf4d2a4506",
+      "idx": 6,
+      "hash": "0cb7c052d8ab6e8f"
+    },
+    {
+      "question": "What is the size of this room in square meters? If multiple rooms are shown, estimate the size of the combined space.",
+      "answer": "37.3",
+      "question_type": "curriculum_box_floor_area_nonrect_yaw_obb_only",
+      "repro": {
+        "task": "box_floor_area_nonrect_yaw_obb_only",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [],
+        "frame_indices": []
+      },
+      "geom": "5f24205e6e4a5eca",
+      "idx": 7,
+      "hash": "65be182df5d9819a"
+    },
+    {
+      "question": "Provide the 3D bounding box of each highlighted region, in the same order: A: <|object_ref_start|>, B: <|object_ref_start|>, C: <|object_ref_start|>.",
+      "answer": "[{\"bbox_3d\": [0.94, 0.86, -1.18, 0.52, 1.02, 0.13]}, {\"bbox_3d\": [1.65, 0.76, -1.07, 0.2, 0.16, 0.36]}, {\"bbox_3d\": [1.42, -0.96, -1.31, 0.23, 0.24, 0.22]}]",
+      "question_type": "curriculum_multi_box_grounding_yaw",
+      "repro": {
+        "task": "multi_box_grounding_yaw",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          22752,
+          4194,
+          6933
+        ],
+        "frame_indices": [
+          20,
+          3,
+          6
+        ]
+      },
+      "geom": "53ba4c7c375a8b78",
+      "idx": 8,
+      "hash": "b8a52f27bf20d7c3"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. Go forward until <|object_ref_start|>. 2. [please fill in]. 3. Go forward until <|object_ref_start|>. 4. [please fill in]. 5. Go forward until <|object_ref_start|>. 6. [please fill in]. 7. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Left, Turn Left, Turn Left  B. Turn Right, Turn Left, Turn Left  C. Turn Right, Turn Left, Turn Right  D. Turn Left, Turn Right, Turn Left",
+      "answer": "A",
+      "question_type": "curriculum_route_plan_3turn_box",
+      "repro": {
+        "task": "route_plan_3turn_box",
+        "scene_id": "scene0000_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          11641,
+          1931,
+          29512,
+          1931,
+          7054,
+          13164,
+          29512
+        ],
+        "frame_indices": [
+          10,
+          1,
+          27,
+          1,
+          6,
+          12,
+          27
+        ]
+      },
+      "geom": "c57b8622ecc1f870",
+      "idx": 9,
+      "hash": "bc5124f092cc4302"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. [please fill in]. 2. Go forward until <|object_ref_start|>. 3. [please fill in]. 4. Go forward until <|object_ref_start|>. 5. [please fill in]. 6. Go forward until <|object_ref_start|>. 7. [please fill in]. 8. Go forward until <|object_ref_start|>. 9. [please fill in]. 10. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Back, Turn Right, Turn Right, Turn Right, Turn Left  B. Turn Right, Turn Left, Turn Right, Turn Left, Turn Left  C. Turn Back, Turn Left, Turn Left, Turn Right, Turn Left  D. Turn Back, Turn Left, Turn Left, Turn Left, Turn Right",
+      "answer": "A",
+      "question_type": "curriculum_route_plan_4turn_box",
+      "repro": {
+        "task": "route_plan_4turn_box",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          23985,
+          21112,
+          4984,
+          13229,
+          8080,
+          28131,
+          15148,
+          4984
+        ],
+        "frame_indices": [
+          21,
+          19,
+          4,
+          11,
+          7,
+          25,
+          13,
+          4
+        ]
+      },
+      "geom": "80e3a28bd6d880a3",
+      "idx": 10,
+      "hash": "89aa27e61eeff688"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. [please fill in]. 2. Go forward until <|object_ref_start|>. 3. [please fill in]. 4. Go forward until <|object_ref_start|>. 5. [please fill in]. 6. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Left, Turn Left, Turn Right  B. Turn Right, Turn Right, Turn Left  C. Turn Back, Turn Right, Turn Right  D. Turn Back, Turn Right, Turn Left",
+      "answer": "C",
+      "question_type": "curriculum_route_plan_2turn_box",
+      "repro": {
+        "task": "route_plan_2turn_box",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          26426,
+          16195,
+          3672,
+          22558,
+          6258,
+          3672
+        ],
+        "frame_indices": [
+          24,
+          14,
+          3,
+          20,
+          5,
+          3
+        ]
+      },
+      "geom": "94dd1f77733bf2d6",
+      "idx": 11,
+      "hash": "a4783c138fdbc529"
+    },
+    {
+      "question": "If you are standing at <|object_ref_start|> and facing <|object_ref_start|>, with the target at <|object_ref_start|>, is the target to the front, back, left, or right? A. front  B. left  C. back  D. right",
+      "answer": "D",
+      "question_type": "curriculum_rel_dir_4way_box",
+      "repro": {
+        "task": "rel_dir_4way_box",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          2856,
+          14880,
+          24602
+        ],
+        "frame_indices": [
+          2,
+          13,
+          22
+        ]
+      },
+      "geom": "c63217719af4eb09",
+      "idx": 12,
+      "hash": "83d39df602034791"
+    },
+    {
+      "question": "What is the size of this room in square meters? If multiple rooms are shown, estimate the size of the combined space.",
+      "answer": "47.9",
+      "question_type": "curriculum_box_floor_area_nonrect_yaw_obb_only",
+      "repro": {
+        "task": "box_floor_area_nonrect_yaw_obb_only",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [],
+        "frame_indices": []
+      },
+      "geom": "12d0d3627c241fee",
+      "idx": 13,
+      "hash": "61be6ecd56e97981"
+    },
+    {
+      "question": "Provide the 3D bounding box of each highlighted region, in the same order: A: <|object_ref_start|>.",
+      "answer": "[{\"bbox_3d\": [0.87, 0.06, -0.77, 0.55, 0.82, 2.6]}]",
+      "question_type": "curriculum_multi_box_grounding_yaw",
+      "repro": {
+        "task": "multi_box_grounding_yaw",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          16740
+        ],
+        "frame_indices": [
+          15
+        ]
+      },
+      "geom": "b7683a20ef205a44",
+      "idx": 14,
+      "hash": "2f991596dde53ec0"
+    },
+    {
+      "question": "Measuring from the closest point of each object, which of these objects is the closest to <|object_ref_start|>? A. <|object_ref_start|>  B. <|object_ref_start|>  C. <|object_ref_start|>  D. <|object_ref_start|>",
+      "answer": "B",
+      "question_type": "curriculum_rel_dist_box",
+      "repro": {
+        "task": "rel_dist_box",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          10835,
+          11586,
+          841,
+          1523,
+          28626
+        ],
+        "frame_indices": [
+          9,
+          10,
+          0,
+          1,
+          26
+        ]
+      },
+      "geom": "d89c449d805bca05",
+      "idx": 15,
+      "hash": "efb61099d7a78b41"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. [please fill in]. 2. Go forward until <|object_ref_start|>. 3. [please fill in]. 4. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Left, Turn Right  B. Turn Right, Turn Right  C. Turn Back, Turn Left  D. Turn Back, Turn Right",
+      "answer": "C",
+      "question_type": "curriculum_route_plan_1turn_box",
+      "repro": {
+        "task": "route_plan_1turn_box",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          4053,
+          20334,
+          6519,
+          29380,
+          6519
+        ],
+        "frame_indices": [
+          3,
+          18,
+          5,
+          26,
+          5
+        ]
+      },
+      "geom": "6fc695b6dedebf6c",
+      "idx": 16,
+      "hash": "f82498c051593aab"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. [please fill in]. 2. Go forward until <|object_ref_start|>. 3. [please fill in]. 4. Go forward until <|object_ref_start|>. 5. [please fill in]. 6. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Left, Turn Left, Turn Right  B. Turn Right, Turn Right, Turn Right  C. Turn Back, Turn Right, Turn Left  D. Turn Back, Turn Left, Turn Left",
+      "answer": "C",
+      "question_type": "curriculum_route_plan_2turn_box",
+      "repro": {
+        "task": "route_plan_2turn_box",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          2672,
+          5754,
+          33622,
+          8371,
+          26184,
+          33622
+        ],
+        "frame_indices": [
+          2,
+          5,
+          30,
+          7,
+          23,
+          30
+        ]
+      },
+      "geom": "474c7042e8b9db0e",
+      "idx": 17,
+      "hash": "11487cc89f2740cd"
+    },
+    {
+      "question": "What is the first-time appearance order of the following patches in the video: p1=<|object_ref_start|>, p2=<|object_ref_start|>, p3=<|object_ref_start|>, p4=<|object_ref_start|>? A. p2, p4, p3, p1  B. p1, p2, p3, p4  C. p2, p3, p4, p1  D. p1, p3, p2, p4",
+      "answer": "C",
+      "question_type": "curriculum_appearance_order",
+      "repro": {
+        "task": "appearance_order",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          22219,
+          24570,
+          26703,
+          17798
+        ],
+        "frame_indices": [
+          16,
+          4,
+          6,
+          15
+        ]
+      },
+      "geom": "f8725b32d6d163ca",
+      "idx": 18,
+      "hash": "cae1091ecfac0c0c"
+    },
+    {
+      "question": "Provide the 3D bounding box of each highlighted region, in the same order: A: <|object_ref_start|>, B: <|object_ref_start|>.",
+      "answer": "[{\"bbox_3d\": [0.79, 0.57, -1.28, 0.99, 0.3, 0.22]}, {\"bbox_3d\": [1.86, 0.98, -0.76, 0.14, 0.11, 0.07]}]",
+      "question_type": "curriculum_multi_box_grounding_yaw",
+      "repro": {
+        "task": "multi_box_grounding_yaw",
+        "scene_id": "scene0000_01",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          21931,
+          19429
+        ],
+        "frame_indices": [
+          20,
+          17
+        ]
+      },
+      "geom": "72efe247f09121b2",
+      "idx": 19,
+      "hash": "c4c47ecf4b877f2c"
+    },
+    {
+      "question": "From the camera's perspective, is <|object_ref_start|> to <|object_ref_start|>'s front-left, front-right, back-left, or back-right? A. back-right  B. back-left  C. front-left  D. front-right",
+      "answer": "D",
+      "question_type": "curriculum_rel_dir_camera_hard",
+      "repro": {
+        "task": "rel_dir_camera_hard",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          24619,
+          4269
+        ],
+        "frame_indices": [
+          22,
+          3
+        ]
+      },
+      "geom": "b930bc9a9228924f",
+      "idx": 20,
+      "hash": "f4da360f6c918922"
+    },
+    {
+      "question": "Is the number of <|object_ref_start|> in the room a multiple of three?",
+      "answer": "yes",
+      "question_type": "curriculum_object_counting_mod3_box",
+      "repro": {
+        "task": "object_counting_mod3_box",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          4943
+        ],
+        "frame_indices": [
+          4
+        ]
+      },
+      "geom": "9b5c072d16cd1854",
+      "idx": 21,
+      "hash": "71e6c297e1d83d1d"
+    },
+    {
+      "question": "Provide the 3D bounding box of each highlighted region, in the same order: A: <|object_ref_start|>.",
+      "answer": "[{\"bbox_3d\": [0.69, 0.58, -0.91, 0.23, 0.16, 0.23]}]",
+      "question_type": "curriculum_multi_box_grounding_yaw",
+      "repro": {
+        "task": "multi_box_grounding_yaw",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          9662
+        ],
+        "frame_indices": [
+          8
+        ]
+      },
+      "geom": "335485591db28390",
+      "idx": 22,
+      "hash": "6f3162559295c11a"
+    },
+    {
+      "question": "Is the number of <|object_ref_start|> in the room odd or even?",
+      "answer": "even",
+      "question_type": "curriculum_object_counting_parity_box",
+      "repro": {
+        "task": "object_counting_parity_box",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          28604
+        ],
+        "frame_indices": [
+          26
+        ]
+      },
+      "geom": "d93b0d7de9f326ce",
+      "idx": 23,
+      "hash": "20068e2071ad3752"
+    },
+    {
+      "question": "What is the size of this room in square meters? If multiple rooms are shown, estimate the size of the combined space.",
+      "answer": "41.0",
+      "question_type": "curriculum_box_floor_area_nonrect_yaw_obb_only",
+      "repro": {
+        "task": "box_floor_area_nonrect_yaw_obb_only",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [],
+        "frame_indices": []
+      },
+      "geom": "1fd115e85cec711c",
+      "idx": 24,
+      "hash": "daa39e8438390067"
+    },
+    {
+      "question": "What is the size of this room in square meters? If multiple rooms are shown, estimate the size of the combined space.",
+      "answer": "15.1",
+      "question_type": "curriculum_box_floor_area_nonrect_yaw_obb_only",
+      "repro": {
+        "task": "box_floor_area_nonrect_yaw_obb_only",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [],
+        "frame_indices": []
+      },
+      "geom": "43cef561795a54d4",
+      "idx": 25,
+      "hash": "942ef93e1a0a4f96"
+    },
+    {
+      "question": "I am standing at <|object_ref_start|> and facing <|object_ref_start|>. How many <|object_ref_start|> are on my right? Answer with a single integer.",
+      "answer": "2",
+      "question_type": "curriculum_rel_dir_count_side_box",
+      "repro": {
+        "task": "rel_dir_count_side_box",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          24763,
+          18832,
+          34537
+        ],
+        "frame_indices": [
+          22,
+          17,
+          31
+        ]
+      },
+      "geom": "034ef06b46e01c39",
+      "idx": 26,
+      "hash": "183c584af9c164ca"
+    },
+    {
+      "question": "Measuring from the closest point of each object, which of these objects is the closest to <|object_ref_start|>? A. <|object_ref_start|>  B. <|object_ref_start|>  C. <|object_ref_start|>  D. <|object_ref_start|>",
+      "answer": "B",
+      "question_type": "curriculum_rel_dist_box",
+      "repro": {
+        "task": "rel_dist_box",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          25697,
+          32987,
+          24384,
+          17921,
+          33971
+        ],
+        "frame_indices": [
+          23,
+          30,
+          22,
+          16,
+          31
+        ]
+      },
+      "geom": "f97029a84ca8dca6",
+      "idx": 27,
+      "hash": "12d71bc9533bfbb8"
+    },
+    {
+      "question": "If you are standing at <|object_ref_start|> and facing <|object_ref_start|>, with the target at <|object_ref_start|>, is the target to the front-left, front-right, back-left, or back-right? A. back-left  B. back-right  C. front-right  D. front-left",
+      "answer": "C",
+      "question_type": "curriculum_rel_dir_hard_box",
+      "repro": {
+        "task": "rel_dir_hard_box",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          22955,
+          26179,
+          34067
+        ],
+        "frame_indices": [
+          21,
+          24,
+          31
+        ]
+      },
+      "geom": "bb30e15e41a742f4",
+      "idx": 28,
+      "hash": "4dfba9eba32b0270"
+    },
+    {
+      "question": "What is the first-time appearance order of the following patches in the video: p1=<|object_ref_start|>, p2=<|object_ref_start|>, p3=<|object_ref_start|>, p4=<|object_ref_start|>? A. p4, p3, p1, p2  B. p3, p4, p1, p2  C. p1, p2, p4, p3  D. p2, p1, p4, p3",
+      "answer": "C",
+      "question_type": "curriculum_appearance_order",
+      "repro": {
+        "task": "appearance_order",
+        "scene_id": "scene0000_02",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          26442,
+          21581,
+          9604,
+          10179
+        ],
+        "frame_indices": [
+          4,
+          14,
+          20,
+          19
+        ]
+      },
+      "geom": "2ec5640b18f99e41",
+      "idx": 29,
+      "hash": "e905bc22be485fe0"
+    },
+    {
+      "question": "What is the size of this room in square meters? If multiple rooms are shown, estimate the size of the combined space.",
+      "answer": "52.3",
+      "question_type": "curriculum_box_floor_area_nonrect_yaw_obb_only",
+      "repro": {
+        "task": "box_floor_area_nonrect_yaw_obb_only",
+        "scene_id": "scene0001_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [],
+        "frame_indices": []
+      },
+      "geom": "69863896d783e153",
+      "idx": 30,
+      "hash": "a27e7529bbb69bee"
+    },
+    {
+      "question": "You are a robot beginning at <|object_ref_start|> and facing <|object_ref_start|>. You want to navigate to <|object_ref_start|>. You will perform the following actions (Note: for each [please fill in], choose either 'turn back,' 'turn left,' or 'turn right.'): 1. [please fill in]. 2. Go forward until <|object_ref_start|>. 3. [please fill in]. 4. Go forward until <|object_ref_start|>. 5. [please fill in]. 6. Go forward until <|object_ref_start|>. 7. [please fill in]. 8. Go forward until <|object_ref_start|>. 9. [please fill in]. 10. Go forward until <|object_ref_start|>. You have reached the final destination. A. Turn Left, Turn Right, Turn Left, Turn Left, Turn Left  B. Turn Right, Turn Left, Turn Left, Turn Left, Turn Left  C. Turn Right, Turn Left, Turn Right, Turn Right, Turn Left  D. Turn Back, Turn Right, Turn Right, Turn Left, Turn Left",
+      "answer": "C",
+      "question_type": "curriculum_route_plan_4turn_box",
+      "repro": {
+        "task": "route_plan_4turn_box",
+        "scene_id": "scene0001_00",
+        "base_seed": 42,
+        "seed_offset": 0,
+        "patch_indices": [
+          15006,
+          15525,
+          26709,
+          12523,
+          19913,
+          5884,
+          8094,
+          26709
+        ],
+        "frame_indices": [
+          13,
+          14,
+          24,
+          11,
+          18,
+          5,
+          7,
+          24
+        ]
+      },
+      "geom": "f1faacee2c52c4af",
+      "idx": 31,
+      "hash": "81f60de7072fca3a"
+    }
+  ]
+}

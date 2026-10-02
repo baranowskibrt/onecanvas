@@ -1,0 +1,58 @@
+# The exact environment the published OneCanvas numbers were measured in.
+#
+# pyproject.toml declares version FLOORS with no upper bounds, deliberately, so
+# that an install onto a provisioned cluster env does not fight the versions
+# already there. The cost is that a clean resolve does not land anywhere near
+# this: building the release env from scratch on 2026-08-25 resolved
+# transformers 5.15.1 / torch 2.13.0 / numpy 2.4.6 off those same floors.
+#
+# Use this file when you want the measured environment rather than a current
+# one:
+#
+#     pip install -e ".[all]" -c constraints-published.txt
+#
+# The version skew is not hypothetical. The released checkpoint was EXPORTED on
+# transformers 5.2.0 while the evals ran on 4.57.3, and the two spell the config
+# differently. That mismatch shipped two unloadable config files (see
+# docs/POST_RELEASE_CHANGES.md, 2026-08-21 and 2026-08-22).
+#
+# Scope: these are the versions of the eval environment, captured from it
+# directly. The training runs' exact environment was never recorded and is not
+# recoverable, so treat the train-only entries (deepspeed, accelerate) as
+# "what training last ran under here", not as provenance for the paper's
+# checkpoint.
+#
+# python 3.11.14
+
+torch==2.7.1
+transformers==4.57.3
+tokenizers==0.22.2
+numpy==1.26.4
+pillow==11.3.0
+safetensors==0.7.0
+huggingface-hub==0.36.2
+
+# eval extra
+peft==0.17.1
+nltk==3.9.1
+rouge-score==0.1.2
+pycocoevalcap==1.2
+tqdm==4.67.1
+
+# train extra
+accelerate==1.9.0
+deepspeed==0.17.6
+scipy==1.15.3
+plyfile==1.1.3
+
+# data extra
+opencv-python==4.11.0.86
+lz4==4.4.5
+pandas==2.2.3
+pyarrow==22.0.0
+
+# Not installable from here and deliberately not declared in pyproject (see
+# README > Install); recorded because it changes numerics, not just throughput.
+# The benchmark scripts request flash_attention_2 and silently fall back to
+# PyTorch SDPA when it is absent.
+# flash-attn==2.7.4.post1

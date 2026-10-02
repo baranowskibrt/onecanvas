@@ -1,0 +1,23 @@
+*.json
+*.png
+*.jpg
+*.pyc
+*.ply
+*.out
+*.err
+*.html
+playground
+wandb
+output
+unsloth_compiled_cache
+.claude
+panels_png
+viz*
+debug_*
+verify_output
+build/
+*.egg-info/
+# internal work orders, never ship
+docs/CLEANUP_EXECUTION_PLAN.md
+docs/RELEASE_CLEANUP_PLAN.md
+docs/SMARTER_MODEL_REVIEW_BRIEF.md
